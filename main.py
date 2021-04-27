@@ -1,3 +1,5 @@
+import sqlite3
+
 import pygame
 import os
 import time
@@ -161,7 +163,7 @@ def main():
     enemy_vel = 1
 
     player_vel = 5
-    laser_vel = 5
+    laser_vel = 10
 
     player = Player(300, 630)
 
@@ -169,6 +171,36 @@ def main():
 
     lost = False
     lost_count = 0
+    def sqlscore():
+
+            try:
+                conn = sqlite3.connect('spaceinvaders.db')
+                cur = conn.cursor()
+                cur.close()
+                conn.close()
+            except sqlite3.Error as error:
+                print('1')
+                print("Erreur lors de la connexion à SQLite", error)
+
+            try:
+                conn = sqlite3.connect('spaceinvaders.db')
+                cur = conn.cursor()
+                sql = "CREATE TABLE IF NOT EXISTS scores (id INTEGER PRIMARY KEY AUTOINCREMENT ,level int );"
+                cur.execute(sql)
+                print("level:")
+                print(level)
+
+                insert_query="INSERT INTO scores (level) VALUES ("+ str(level) + ")"
+                cur.execute(insert_query)
+
+                print('4')
+                conn.commit()
+                cur.close()
+
+                conn.close()
+            except sqlite3.Error as error:
+                print('2')
+                print("Erreur lors de la connexion à SQLite", error)
 
     def redraw_window():
         WIN.blit(BG, (0,0))
@@ -186,6 +218,8 @@ def main():
 
         if lost:
             lost_label = lost_font.render("You Lost!!", 1, (255,255,255))
+            print("test")
+
             WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, 350))
 
         pygame.display.update()
@@ -195,12 +229,18 @@ def main():
         redraw_window()
 
         if lives <= 0 or player.health <= 0:
+            if lost==False:
+                sqlscore()
             lost = True
+            print("point 1.3")
+            print(lost)
+
             lost_count += 1
 
         if lost:
             if lost_count > FPS * 3:
                 run = False
+                print("point 1.1")
             else:
                 continue
 
@@ -257,6 +297,6 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 main()
     pygame.quit()
-
+print('score')
 
 main_menu()
