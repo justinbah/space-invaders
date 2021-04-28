@@ -214,7 +214,7 @@ def main():
                 conn = sqlite3.connect('spaceinvaders.db')
                 cur = conn.cursor()
 
-                insert_query="SELECT * FROM scores order by id DESC LIMIT 5"
+                insert_query="SELECT * FROM scores order by score DESC, chrono DESC, level DESC LIMIT 5"
                 title_font = pygame.font.SysFont("comicsans", 70)
 
                 title_label = title_font.render(" Level / Score / Temps", 1, (255,255,255))
