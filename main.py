@@ -209,6 +209,31 @@ def main():
                 conn.close()
             except sqlite3.Error as error:
                 print("Erreur lors de la connexion à SQLite", error)
+    def afficherScore():
+        try:
+                conn = sqlite3.connect('spaceinvaders.db')
+                cur = conn.cursor()
+
+                insert_query="SELECT * FROM scores order by id DESC LIMIT 5"
+                title_font = pygame.font.SysFont("comicsans", 70)
+
+                title_label = title_font.render(" Level / Score / Temps", 1, (255,255,255))
+
+
+                positionYListe=150
+                WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, positionYListe))
+                for row in cur.execute(insert_query):
+                    print(row)
+                    title_label = title_font.render(str(row[1])+" / "+str(row[3])+" / "+str(row[2]), 1, (255,255,255))
+                    positionYListe+=50
+                    WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, positionYListe))
+                pygame.display.update()
+
+                cur.close()
+                conn.close()
+        except sqlite3.Error as error:
+                print("Erreur lors de la connexion à SQLite", error)
+
 
     def redraw_window():
         WIN.blit(BG, (0,0))
@@ -298,7 +323,21 @@ def main():
 
         if player.move_lasers(-laser_vel, enemies):
             score += 100
+    fin = True
 
+    WIN.blit(BG, (0,0))
+    title_font = pygame.font.SysFont("comicsans", 70)
+    title_label = title_font.render("Press the scape to  continu...", 1, (255,255,255))
+    WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 30))
+    afficherScore()
+
+    pygame.display.update()
+
+    while fin:
+        for event in pygame.event.get():
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_SPACE]:
+                fin=False
 def main_menu():
     title_font = pygame.font.SysFont("comicsans", 70)
     run = True
