@@ -27,6 +27,7 @@ YELLOW_LASER = pygame.image.load(os.path.join("assets", "pixel_laser_yellow.png"
 # Background
 BG = pygame.transform.scale(pygame.image.load(os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
 BackGroundLog = pygame.transform.scale(pygame.image.load(os.path.join("assets", "ecran_acceuil.jpg")), (WIDTH, HEIGHT))
+BG_RESULTAT = pygame.transform.scale(pygame.image.load(os.path.join("assets", "fond_resulat.png")), (WIDTH, HEIGHT))
 
 class Laser:
     def __init__(self, x, y, img):
@@ -324,7 +325,7 @@ def main():
             score += 100
     fin = True
 
-    WIN.blit(BG, (0,0))
+    WIN.blit(BG_RESULTAT, (0,0))
     title_font = pygame.font.SysFont("comicsans", 70)
     title_label = title_font.render("Press the scape to  continu...", 1, (255,255,255))
     WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 30))
