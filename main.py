@@ -8,7 +8,7 @@ pygame.font.init()
 
 WIDTH, HEIGHT = 750, 750
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Space Shooter Tutorial")
+pygame.display.set_caption("Space Invaders QD,QG,JB")
 
 # Load images
 RED_SPACE_SHIP = pygame.image.load(os.path.join("assets", "pixel_ship_red_small.png"))
@@ -26,6 +26,7 @@ YELLOW_LASER = pygame.image.load(os.path.join("assets", "pixel_laser_yellow.png"
 
 # Background
 BG = pygame.transform.scale(pygame.image.load(os.path.join("assets", "background-black.png")), (WIDTH, HEIGHT))
+BackGroundLog = pygame.transform.scale(pygame.image.load(os.path.join("assets", "ecran_acceuil.jpg")), (WIDTH, HEIGHT))
 
 class Laser:
     def __init__(self, x, y, img):
@@ -342,9 +343,9 @@ def main_menu():
     title_font = pygame.font.SysFont("comicsans", 70)
     run = True
     while run:
-        WIN.blit(BG, (0,0))
+        WIN.blit(BackGroundLog, (0,0))
         title_label = title_font.render("Press the scape to begin...", 1, (255,255,255))
-        WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 350))
+        WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 500))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
