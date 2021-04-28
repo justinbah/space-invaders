@@ -149,6 +149,16 @@ def collide(obj1, obj2):
     offset_x = obj2.x - obj1.x
     offset_y = obj2.y - obj1.y
     return obj1.mask.overlap(obj2.mask, (offset_x, offset_y)) != None
+class Chrono:
+    def __init__(self):
+        self.chronoDebut=time.time()
+        self.chrono=round(time.time()-self.chronoDebut)
+        self.chronoMinute=time.strftime(' %M m %S s', time.gmtime(self.chrono))
+    def calculChrono(self):
+        self.chrono=round(time.time()-self.chronoDebut)
+        self.chronoMinute=time.strftime(' %M m %S s', time.gmtime(self.chrono))
+    def getchronoMinute(self):
+        return self.chronoMinute
 
 def main():
     run = True
@@ -168,6 +178,8 @@ def main():
     player = Player(300, 630)
 
     clock = pygame.time.Clock()
+    chrono=Chrono()
+    chrono.calculChrono()
 
     lost = False
     lost_count = 0
@@ -185,12 +197,12 @@ def main():
             try:
                 conn = sqlite3.connect('spaceinvaders.db')
                 cur = conn.cursor()
-                sql = "CREATE TABLE IF NOT EXISTS scores (id INTEGER PRIMARY KEY AUTOINCREMENT ,level int );"
+                sql = "CREATE TABLE IF NOT EXISTS scores (id INTEGER PRIMARY KEY AUTOINCREMENT ,level int ,chrono text,score int , avatar text);"
                 cur.execute(sql)
                 print("level:")
                 print(level)
 
-                insert_query="INSERT INTO scores (level) VALUES ("+ str(level) + ")"
+                insert_query="INSERT INTO scores (level,chrono) VALUES ("+ str(level) +",'"+str(chrono.getchronoMinute())+"')"
                 cur.execute(insert_query)
 
                 print('4')
@@ -208,8 +220,14 @@ def main():
         lives_label = main_font.render(f"Lives: {lives}", 1, (255,255,255))
         level_label = main_font.render(f"Level: {level}", 1, (255,255,255))
 
+        if lost==False:
+            chrono.calculChrono()
+
+        chrono_label = main_font.render(f"Chrono: {chrono.getchronoMinute()}", 1, (255,255,255))
+
         WIN.blit(lives_label, (10, 10))
         WIN.blit(level_label, (WIDTH - level_label.get_width() - 10, 10))
+        WIN.blit(chrono_label, (10, 50))
 
         for enemy in enemies:
             enemy.draw(WIN)
@@ -225,6 +243,7 @@ def main():
         pygame.display.update()
 
     while run:
+
         clock.tick(FPS)
         redraw_window()
 
@@ -232,10 +251,10 @@ def main():
             if lost==False:
                 sqlscore()
             lost = True
-            print("point 1.3")
             print(lost)
 
             lost_count += 1
+
 
         if lost:
             if lost_count > FPS * 3:
@@ -288,13 +307,14 @@ def main_menu():
     run = True
     while run:
         WIN.blit(BG, (0,0))
-        title_label = title_font.render("Press the mouse to begin...", 1, (255,255,255))
+        title_label = title_font.render("Press the scape to begin...", 1, (255,255,255))
         WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 350))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_SPACE]:
                 main()
     pygame.quit()
 print('score')
