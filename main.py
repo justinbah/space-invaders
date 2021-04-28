@@ -198,7 +198,7 @@ def main():
             try:
                 conn = sqlite3.connect('spaceinvaders.db')
                 cur = conn.cursor()
-                sql = "CREATE TABLE IF NOT EXISTS scores (id INTEGER PRIMARY KEY AUTOINCREMENT ,level int ,chrono text,score int , avatar text);"
+                sql = "CREATE TABLE IF NOT EXISTS scores (id INTEGER PRIMARY KEY AUTOINCREMENT ,level INT ,chrono text,score INT);"
                 cur.execute(sql)
 
                 insert_query="INSERT INTO scores (level,chrono,score) VALUES ("+ str(level) +",'"+str(chrono.getchronoMinute())+"',"+ str(score) +")"
@@ -214,7 +214,7 @@ def main():
                 conn = sqlite3.connect('spaceinvaders.db')
                 cur = conn.cursor()
 
-                insert_query="SELECT * FROM scores order by score DESC, chrono DESC, level DESC LIMIT 5"
+                insert_query="SELECT * FROM scores ORDER BY score DESC, chrono DESC, level DESC LIMIT 5"
                 title_font = pygame.font.SysFont("comicsans", 70)
 
                 title_label = title_font.render(" Level / Score / Temps", 1, (255,255,255))
@@ -223,7 +223,6 @@ def main():
                 positionYListe=150
                 WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, positionYListe))
                 for row in cur.execute(insert_query):
-                    print(row)
                     title_label = title_font.render(str(row[1])+" / "+str(row[3])+" / "+str(row[2]), 1, (255,255,255))
                     positionYListe+=50
                     WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, positionYListe))
@@ -280,7 +279,6 @@ def main():
         if lost:
             if lost_count > FPS * 3:
                 run = False
-                print("point 1.1")
             else:
                 continue
 
