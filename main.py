@@ -327,7 +327,7 @@ def main():
 
     WIN.blit(BG_RESULTAT, (0,0))
     title_font = pygame.font.SysFont("comicsans", 70)
-    title_label = title_font.render("Press the scape to  continu...", 1, (255,255,255))
+    title_label = title_font.render("Press the scape to continue...", 1, (255,255,255))
     WIN.blit(title_label, (WIDTH/2 - title_label.get_width()/2, 30))
     afficherScore()
 
