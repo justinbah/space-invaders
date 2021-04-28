@@ -113,6 +113,7 @@ class Player(Ship):
                         objs.remove(obj)
                         if laser in self.lasers:
                             self.lasers.remove(laser)
+                        return True
 
     def draw(self, window):
         super().draw(window)
@@ -165,6 +166,7 @@ def main():
     FPS = 60
     level = 0
     lives = 5
+    score = 0
     main_font = pygame.font.SysFont("comicsans", 50)
     lost_font = pygame.font.SysFont("comicsans", 60)
 
@@ -191,7 +193,6 @@ def main():
                 cur.close()
                 conn.close()
             except sqlite3.Error as error:
-                print('1')
                 print("Erreur lors de la connexion à SQLite", error)
 
             try:
@@ -199,19 +200,14 @@ def main():
                 cur = conn.cursor()
                 sql = "CREATE TABLE IF NOT EXISTS scores (id INTEGER PRIMARY KEY AUTOINCREMENT ,level int ,chrono text,score int , avatar text);"
                 cur.execute(sql)
-                print("level:")
-                print(level)
 
-                insert_query="INSERT INTO scores (level,chrono) VALUES ("+ str(level) +",'"+str(chrono.getchronoMinute())+"')"
+                insert_query="INSERT INTO scores (level,chrono,score) VALUES ("+ str(level) +",'"+str(chrono.getchronoMinute())+"',"+ str(score) +")"
                 cur.execute(insert_query)
-
-                print('4')
                 conn.commit()
                 cur.close()
 
                 conn.close()
             except sqlite3.Error as error:
-                print('2')
                 print("Erreur lors de la connexion à SQLite", error)
 
     def redraw_window():
@@ -219,6 +215,7 @@ def main():
         # draw text
         lives_label = main_font.render(f"Lives: {lives}", 1, (255,255,255))
         level_label = main_font.render(f"Level: {level}", 1, (255,255,255))
+        score_label = main_font.render(f"Score: {score}", 0, (255,255,255))
 
         if lost==False:
             chrono.calculChrono()
@@ -228,6 +225,7 @@ def main():
         WIN.blit(lives_label, (10, 10))
         WIN.blit(level_label, (WIDTH - level_label.get_width() - 10, 10))
         WIN.blit(chrono_label, (10, 50))
+        WIN.blit(score_label, (WIDTH - score_label.get_width() - 10, 40))
 
         for enemy in enemies:
             enemy.draw(WIN)
@@ -236,7 +234,6 @@ def main():
 
         if lost:
             lost_label = lost_font.render("You Lost!!", 1, (255,255,255))
-            print("test")
 
             WIN.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, 350))
 
@@ -251,7 +248,6 @@ def main():
             if lost==False:
                 sqlscore()
             lost = True
-            print(lost)
 
             lost_count += 1
 
@@ -300,7 +296,8 @@ def main():
                 lives -= 1
                 enemies.remove(enemy)
 
-        player.move_lasers(-laser_vel, enemies)
+        if player.move_lasers(-laser_vel, enemies):
+            score += 100
 
 def main_menu():
     title_font = pygame.font.SysFont("comicsans", 70)
@@ -317,6 +314,5 @@ def main_menu():
             if keys[pygame.K_SPACE]:
                 main()
     pygame.quit()
-print('score')
 
 main_menu()
